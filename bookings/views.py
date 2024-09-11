@@ -1,15 +1,21 @@
-from rest_framework import generics, mixins
+from rest_framework import viewsets
+from django.contrib.auth.models import User
 
 
-from .models import MeetingRoom
-from .serializers import MeetingRoomSerializer
+from .models import MeetingRoom, Booking
+from .serializers import MeetingRoomSerializer, UserSerializer, BookingSerializer
 
 
-class MeetingRoomList(generics.ListCreateAPIView):
+class MeetingRoomViewSet(viewsets.ModelViewSet):
     queryset = MeetingRoom.objects.all()
     serializer_class = MeetingRoomSerializer
 
 
-class MeetingRoomDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = MeetingRoom.objects.all()
-    serializer_class = MeetingRoomSerializer
+class UserViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class BookingViewSet(viewsets.ModelViewSet):
+    queryset = Booking.objects.all()
+    serializer_class = BookingSerializer

@@ -1,9 +1,12 @@
-from django.urls import path
-from rest_framework.urlpatterns import format_suffix_patterns
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 from bookings import views
 
-urlpatterns = [
-    path('meeting_rooms/', views.MeetingRoomList.as_view()),
-    path('meeting_rooms/<int:pk>', views.MeetingRoomDetail.as_view()),
-]
+router = DefaultRouter()
+router.register(r'meeting_rooms', views.MeetingRoomViewSet, 'meeting room')
+router.register(r'users', views.UserViewSet, 'users')
+router.register(r'bookings', views.BookingViewSet, 'bookings')
 
+urlpatterns = [
+    path('', include(router.urls)),
+]
