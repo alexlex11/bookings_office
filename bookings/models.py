@@ -24,4 +24,4 @@ class Booking(models.Model):
         return f'{self.user} booked a {self.meeting_room} from {self.start_datetime} to {self.end_datetime} for {self.descriptions}.'
 
     class Meta:
-        ordering = ['created_at']
+        ordering = ['start_datetime']

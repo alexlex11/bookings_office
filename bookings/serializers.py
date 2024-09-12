@@ -19,17 +19,25 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('url', 'username', 'bookings')
+        fields = ('id', 'username', 'bookings')
 
 
 class BookingSerializer(serializers.ModelSerializer):
-    meeting_room = MeetingRoomSerializer(read_only=True)
-    user = serializers.StringRelatedField(read_only=True)
+    user = serializers.StringRelatedField(
+        read_only=True, default=serializers.CurrentUserDefault())
 
     class Meta:
         model = Booking
         fields = ('url', 'meeting_room', 'user', 'descriptions',
-                  'start_datetime', 'end_datetime', 'is_free', 'created_at')
+                  'start_datetime', 'end_datetime', 'created_at', 'is_free')
+
+    def create(self, validated_data):
+        booking = Booking(**validated_data,
+                          user=self.context['request'].user
+                          )
+        booking.save()
+        return booking
+
 
 class SignupSerializer(serializers.ModelSerializer):
     class Meta:
