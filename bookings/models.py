@@ -23,8 +23,5 @@ class Booking(models.Model):
     def __str__(self):
         return f'{self.user} booked a {self.meeting_room} from {self.start_datetime} to {self.end_datetime} for {self.descriptions}.'
 
-    def is_overlapped(self, start, end):
-        return self.start_time <= start < self.end_time or self.start_time < end <= self.end_time
-
     class Meta:
         ordering = ['created_at']
