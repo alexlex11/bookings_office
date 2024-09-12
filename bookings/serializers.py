@@ -10,7 +10,7 @@ from bookings.models import MeetingRoom, Booking
 class MeetingRoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = MeetingRoom
-        fields = ('url', 'name', 'descriptions')
+        fields = ('url', 'id', 'name', 'descriptions')
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -19,7 +19,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'bookings')
+        fields = ('url', 'id', 'username', 'bookings')
 
 
 class BookingSerializer(serializers.ModelSerializer):
@@ -28,8 +28,8 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ('url', 'meeting_room', 'user', 'descriptions',
-                  'start_datetime', 'end_datetime', 'created_at', 'is_free')
+        fields = ('url', 'id', 'meeting_room', 'user', 'descriptions',
+                  'start_datetime', 'end_datetime', 'created_at')
 
     def create(self, validated_data):
         booking = Booking(**validated_data,
