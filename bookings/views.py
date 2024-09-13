@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import viewsets, mixins
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -25,21 +26,28 @@ class BookingViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,  mixins.Ret
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
 
-    @action(detail=False, methods=['get'], url_path=r'today/(?P<room_id>\d)',)
+    @action(detail=False, methods=['get'], url_path=r'today/(?P<room_id>\d+)',)
     def today(self, request, room_id):
-        bookings = Booking.objects.filter(start_datetime__date=timezone.now().date()).filter(
-            meeting_room__id=room_id).order_by('start_datetime')
+        meeting_room = get_object_or_404(MeetingRoom, pk=room_id)
+        today = timezone.now().date()
+        bookings = Booking.objects.filter(
+            meeting_room=meeting_room,
+            start_datetime__date=today,
+            end_datetime__date=today
+        )
         serializer = self.get_serializer(bookings, many=True)
-
+        
         is_free = True
-        for booking in serializer.data:
-            start = booking['start_datetime']
-            end = booking['end_datetime']
+        for booking in bookings:
+            start = booking.start_datetime
+            end = booking.end_datetime
             current = timezone.now()
-            if datetime.fromisoformat(start) <= current <= datetime.fromisoformat(end):
+            if start <= current <= end:
                 is_free = False
                 break
 
+
+        
         return Response({'is_free': is_free, 'bookings': serializer.data})
 
 
