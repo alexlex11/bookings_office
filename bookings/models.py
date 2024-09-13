@@ -22,7 +22,7 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user} booked a {self.meeting_room} \nfrom {str(self.start_datetime)[:19]} to {str(self.end_datetime)[:19]} \nfor {self.descriptions} \nin {str(self.created_at)[:19]}.'
+        return f'{self.user} booked a room {self.meeting_room} \nfrom {str(self.start_datetime)[:19]} to {str(self.end_datetime)[:19]} \nfor {self.descriptions} \nin {str(self.created_at)[:19]}.'
 
     class Meta:
         ordering = ['start_datetime']
