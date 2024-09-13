@@ -1,10 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
+from datetime import datetime
 
 
 class MeetingRoom(models.Model):
     name = models.CharField(max_length=255, unique=True)
     descriptions = models.TextField(blank=True, null=True)
+
 
     def __str__(self):
         return f'{self.name}'
@@ -20,7 +22,7 @@ class Booking(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.user} booked a {self.meeting_room} from {self.start_datetime.strptime("%d/%m/%Y, %H:%M:%S")} to {self.end_datetime.strptime("%d/%m/%Y, %H:%M:%S")} for {self.descriptions}.'
+        return f'{self.user} booked a {self.meeting_room} \nfrom {str(self.start_datetime)[:19]} to {str(self.end_datetime)[:19]} \nfor {self.descriptions} \nin {str(self.created_at)[:19]}.'
 
     class Meta:
         ordering = ['start_datetime']

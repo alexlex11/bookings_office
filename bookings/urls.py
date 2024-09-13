@@ -8,7 +8,9 @@ router.register(r'meeting-rooms', views.MeetingRoomViewSet, 'meetingroom')
 router.register(r'users', views.UserViewSet, 'user')
 router.register(r'sing-up', views.SignUpUserView, 'singup')
 router.register(r'bookings', views.BookingViewSet, 'booking')
+router.register(r'reports', views.ReportViewSet, 'report')
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls')),
 ]
