@@ -43,13 +43,14 @@
   python manage.py migrate
   ```
 
-**Тесты**
-
-  ```
-  pytest
-  ```
 
 6. Запустите сервер разработки:
 
   ```
   python manage.py runserver
+  ```
+**Тесты**
+
+  ```
+  pytest
+  ```
