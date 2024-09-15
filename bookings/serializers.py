@@ -36,15 +36,6 @@ class MeetingRoomSerializer(serializers.ModelSerializer):
         fields = ('url', 'id', 'name', 'descriptions')
 
 
-class UserSerializer(serializers.ModelSerializer):
-    bookings = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Booking.objects.all())
-
-    class Meta:
-        model = User
-        fields = ('url', 'id', 'username', 'bookings')
-
-
 class BookingSerializer(serializers.ModelSerializer):
     user = serializers.StringRelatedField(
         read_only=True, default=serializers.CurrentUserDefault())

@@ -10,6 +10,7 @@ API_CREATE_BOOKING_URL = '/api/bookings/'
 API_GET_ROOM_BOOKINGS_URL = '/api/bookings/today/'
 API_REPORT_URL = '/api/reports/'
 
+
 @pytest.mark.django_db
 def test_create_booking_201(api_client):
     """
@@ -116,9 +117,8 @@ def test_get_room_bookings_is_not_free(api_client):
     print(Booking.objects.create(**today_payload, user=test_user))
     print(Booking.objects.create(**not_today_payload, user=test_user))
 
-
     response_get = api_client.get(
-         f'{API_GET_ROOM_BOOKINGS_URL}1/', data={'room_id': 1}, format='json')
+        f'{API_GET_ROOM_BOOKINGS_URL}1/', data={'room_id': 1}, format='json')
 
     assert response_get.status_code == 200
     assert len(response_get.data['bookings']) != 0
@@ -142,7 +142,6 @@ def test_get_room_bookings_is_free(api_client):
     response_get = api_client.get(
         f'{API_GET_ROOM_BOOKINGS_URL}1/', data={'room_id': 1}, format='json')
 
-
     assert response_get.status_code == 200
     assert len(response_get.data['bookings']) == 0
     assert response_get.data['is_free']
@@ -158,12 +157,12 @@ def test_report_200(api_client):
     test_user = User.objects.create_user(
         username='testusername', password='testpassword')
     api_client.force_login(test_user)
-    
-    start_datetime = (datetime.today() - timedelta(days=3)).strftime('%Y-%m-%d')
+
+    start_datetime = (datetime.today() - timedelta(days=3)
+                      ).strftime('%Y-%m-%d')
     end_datetime = (datetime.today() + timedelta(days=2)).strftime('%Y-%m-%d')
-    
+
     response_get = api_client.get(
         f'{API_REPORT_URL}{start_datetime}-{end_datetime}/', data={'date_from': str(start_datetime), 'date_to': str(end_datetime)}, format='json')
-
 
     assert response_get.status_code == 200

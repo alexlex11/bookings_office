@@ -1,16 +1,20 @@
+import datetime
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, mixins
-from django.contrib.auth.models import User
+from rest_framework import viewsets, mixins, status
 from django.utils import timezone
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from datetime import datetime
+from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter
 
 from .models import MeetingRoom, Booking
-from .serializers import MeetingRoomSerializer, ReportSerializer, UserSerializer, BookingSerializer, SignupSerializer, get_user_model
+from .serializers import MeetingRoomSerializer, ReportSerializer, BookingSerializer, SignupSerializer, get_user_model
 
 
+@extend_schema_view(
+    report_by=extend_schema(
+        summary="Получить отчет в формате word, содержащий в себе данные за определенный период о бронированиях переговорных комнат",
+    ))
 class ReportViewSet(viewsets.GenericViewSet):
     serializer_class = ReportSerializer
 
@@ -22,6 +26,31 @@ class ReportViewSet(viewsets.GenericViewSet):
         return serializer.to_representation(serializer.validated_data)
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Получить все записи о бронировании",
+    ),
+
+    create=extend_schema(
+        summary="Создание новой записи на бронирование",
+        request=BookingSerializer,
+        parameters=[
+            OpenApiParameter(
+                name='Meeting room ID',
+                location=OpenApiParameter.QUERY,
+                required=True,
+                type=int
+            ),
+        ]
+
+    ),
+    retrieve=extend_schema(
+        summary='Получить запись о бронирование по ID'
+    ),
+    today=extend_schema(
+        summary='Получить все записи о бронировании переговорной комнаты по ID на текущий день'
+    )
+)
 class BookingViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,  mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     queryset = Booking.objects.all()
     serializer_class = BookingSerializer
@@ -36,7 +65,7 @@ class BookingViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,  mixins.Ret
             end_datetime__date=today
         )
         serializer = self.get_serializer(bookings, many=True)
-        
+
         is_free = True
         for booking in bookings:
             start = booking.start_datetime
@@ -46,21 +75,26 @@ class BookingViewSet(mixins.CreateModelMixin, mixins.ListModelMixin,  mixins.Ret
                 is_free = False
                 break
 
-
-        
         return Response({'is_free': is_free, 'bookings': serializer.data})
 
 
+@extend_schema_view(
+    list=extend_schema(
+        summary="Получить список существующих переговорных комнат",
+    ),
+    retrieve=extend_schema(
+        summary='Детальная информация о переговорной комнате по ID'
+    ))
 class MeetingRoomViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = MeetingRoom.objects.all()
     serializer_class = MeetingRoomSerializer
 
 
-class UserViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-
+@extend_schema_view(
+    create=extend_schema(
+        summary="Создание нового пользователя",
+        description="Чтобы залогиниться вверху есть кнопка Authorize"
+    ))
 class SignUpUserView(mixins.CreateModelMixin, viewsets.GenericViewSet):
     permission_classes = [AllowAny]
     queryset = get_user_model().objects.all()
