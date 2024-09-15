@@ -15,13 +15,13 @@
 1. Клонируйте репозиторий проекта:
 
   ```
-  git clone https://github.com/example/my-drf-project.git
+  git clone https://github.com/alexlex11/bookings_office.git
   ```
 
 2. Перейдите в каталог проекта:
 
   ```
-  cd my-drf-project
+  cd bookings_office
   ```
 
 3. Создайте виртуальную среду (если она еще не создана):
