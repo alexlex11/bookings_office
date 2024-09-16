@@ -1,11 +1,10 @@
-import datetime
 from django.shortcuts import get_object_or_404
-from rest_framework import viewsets, mixins, status
+from rest_framework import viewsets, mixins
 from django.utils import timezone
 from rest_framework.permissions import AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from drf_spectacular.utils import extend_schema_view, extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema_view, extend_schema
 
 from .models import MeetingRoom, Booking
 from .serializers import MeetingRoomSerializer, ReportSerializer, BookingSerializer, SignupSerializer, get_user_model
@@ -32,17 +31,8 @@ class ReportViewSet(viewsets.GenericViewSet):
     ),
 
     create=extend_schema(
-        summary="Создание новой записи на бронирование",
+        summary="Создание новой записи бронирования",
         request=BookingSerializer,
-        parameters=[
-            OpenApiParameter(
-                name='Meeting room ID',
-                location=OpenApiParameter.QUERY,
-                required=True,
-                type=int
-            ),
-        ]
-
     ),
     retrieve=extend_schema(
         summary='Получить запись о бронирование по ID'
