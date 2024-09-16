@@ -58,5 +58,5 @@
 **Тесты**
 
   ```
-  pytest
+ pytest tests/test_bookings/tests_api.py -v -s
   ```
